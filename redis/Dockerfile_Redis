@@ -1,0 +1,29 @@
+# Redis
+
+FROM ubuntu
+LABEL Steven C. <stevencch99@gmail.com>
+
+ENV http_proxy=http://172.19.8.10:3128 https_proxy=http://172.19.8.10:3128
+RUN echo 'Acquire::http::Proxy "http://172.19.8.10:3128";' > /etc/apt/apt.conf
+
+RUN apt-get update \
+    && buildDeps='gcc make libc6-dev wget' \
+    && apt-get install -y --no-install-recommends $buildDeps
+
+RUN mkdir -p /usr/src/redis
+
+RUN wget -O redis.tgz "http://download.redis.io/redis-stable.tar.gz" \
+    && tar -xzf redis.tgz -C /usr/src/redis --strip-components=1 \
+    && rm redis.tgz \
+    && cd /usr/src/redis \
+    && make \
+    && make install \
+    && cd / \
+    && rm -rf /usr/src/redis \
+    && apt-get purge -y --auto-remove $buildDeps
+
+EXPOSE 6379
+
+# RUN echo $'CONFIG SET protected-mode no' > ./redis.conf
+
+CMD [ "redis-server" ]
