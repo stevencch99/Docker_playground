@@ -24,6 +24,7 @@ RUN wget -O redis.tgz "http://download.redis.io/redis-stable.tar.gz" \
 
 EXPOSE 6379
 
+# Prepare configuration for redis-server
 # RUN echo $'CONFIG SET protected-mode no' > ./redis.conf
 
 CMD [ "redis-server" ]
